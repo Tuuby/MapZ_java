@@ -1,3 +1,7 @@
+package noise;
+
+import graphics.Graphics;
+
 import java.util.Random;
 
 public class NoiseMap {
@@ -166,10 +170,19 @@ public class NoiseMap {
         }
     }
 
+    public void render() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Graphics.setColor(elevation[x][y] / 255f, 0, 0, 1);
+                Graphics.drawPixel(x, y);
+            }
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("NoiseMap{")
+        builder.append("Noise.NoiseMap{")
                 .append("width=").append(width)
                 .append(", height=").append(height)
                 .append(",\nvalues=[");
