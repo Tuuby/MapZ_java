@@ -13,7 +13,7 @@ public class Renderer {
     private static GLProfile profile = null;
     private static GLWindow window = null;
 
-    public static int screenWidth = 1000;
+    public static int screenWidth = 800;
     public static int screenHeight = 800;
 
     public static float unitsWide = 800;
