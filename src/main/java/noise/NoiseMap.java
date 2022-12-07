@@ -114,10 +114,12 @@ public class NoiseMap {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
+                // Values are between 1 & -1; so we multiply by 145 (255 / 1.75) to get the values between -127 & 127
+                // Additionally we add 127 to get the values positive only between 0 & 255
                 double el = (noise.eval(x * (scale * 0.5), y * (scale * 0.5))
                         + 0.5 * noise.eval(x * (scale * 2), y * (scale * 2))
                         + 0.25 * noise.eval(x * (scale * 4), y * (scale * 4)))
-                        * 145;
+                        * 145 + 127;
                 elevation[x][y] = (short) (Math.pow(el, 2) / 255);
                 if (elevationOffset < 0) {
                     if (elevation[x][y] >= Short.MIN_VALUE - elevationOffset)
@@ -164,7 +166,7 @@ public class NoiseMap {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 short m = moisture[x][y];
-                if (rnd.nextInt(255) < m / 8 * scale)
+                if (rnd.nextInt(255) < m / 8f * scale)
                     trees[x][y] = true;
             }
         }
@@ -173,8 +175,14 @@ public class NoiseMap {
     public void render() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Graphics.setColor(elevation[x][y] / 255f, 0, 0, 1);
-                Graphics.drawPixel(x, y);
+                if (elevation[x][y] < waterlevel) {
+                    Graphics.setColor(0, elevation[x][y] / 255f, (elevation[x][y] + 127) / 255f, 1);
+                    Graphics.drawPixel(x, y);
+                }
+                else {
+                    Graphics.setColor(elevation[x][y] / 255f - 0.3f, 0.9f - (elevation[x][y] / 1023f), 0, 1);
+                    Graphics.drawPixel(x, y);
+                }
             }
         }
     }
