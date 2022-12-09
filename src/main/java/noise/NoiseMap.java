@@ -17,7 +17,7 @@ public class NoiseMap {
     private short weedlevel = 0;
     private int elevationOffset;
     private int moistureOffset;
-    private OpenSimplexNoise noise;
+    private Noise noise;
 
     public NoiseMap(int width, int height) {
         this.width = width;
@@ -110,15 +110,15 @@ public class NoiseMap {
     }
 
     public void generateElevation() {
-        noise = new OpenSimplexNoise(elevationSeed);
+        noise = new PerlinNoise();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 // Values are between 1 & -1; so we multiply by 145 (255 / 1.75) to get the values between -127 & 127
                 // Additionally we add 127 to get the values positive only between 0 & 255
-                double el = (noise.eval(x * (scale * 0.5), y * (scale * 0.5))
-                        + 0.5 * noise.eval(x * (scale * 2), y * (scale * 2))
-                        + 0.25 * noise.eval(x * (scale * 4), y * (scale * 4)))
+                double el = (noise.noise(x * (scale * 0.5), y * (scale * 0.5))
+                        + 0.5 * noise.noise(x * (scale * 2), y * (scale * 2))
+                        + 0.25 * noise.noise(x * (scale * 4), y * (scale * 4)))
                         * 145 + 127;
                 elevation[x][y] = (short) (Math.pow(el, 2) / 255);
                 if (elevationOffset < 0) {
@@ -141,9 +141,9 @@ public class NoiseMap {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                double mo = (noise.eval(x * (scale * 0.5), y * (scale * 0.5))
-                        + 0.5 * noise.eval(x * (scale * 2), y * (scale * 2))
-                        + 0.25 * noise.eval(x * (scale * 4), y * (scale * 4)))
+                double mo = (noise.noise(x * (scale * 0.5), y * (scale * 0.5))
+                        + 0.5 * noise.noise(x * (scale * 2), y * (scale * 2))
+                        + 0.25 * noise.noise(x * (scale * 4), y * (scale * 4)))
                         * 145;
                 moisture[x][y] = (short) mo;
                 if (moistureOffset < 0) {

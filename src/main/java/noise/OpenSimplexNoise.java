@@ -17,7 +17,7 @@ package noise;/*
  * This is mostly kept here for reference. In particular, the 4D code is very slow.
  */
 
-public class OpenSimplexNoise {
+public class OpenSimplexNoise extends Noise {
 
     private static final double STRETCH_CONSTANT_2D = -0.211324865405187;    // (1/Math.sqrt(2+1)-1)/2;
     private static final double SQUISH_CONSTANT_2D = 0.366025403784439;      // (Math.sqrt(2+1)-1)/2;
@@ -75,7 +75,8 @@ public class OpenSimplexNoise {
     }
 
     // 2D OpenSimplex Noise.
-    public double eval(double x, double y) {
+    @Override
+    public double noise(double x, double y) {
 
         // Place input coordinates onto grid.
         double stretchOffset = (x + y) * STRETCH_CONSTANT_2D;
