@@ -1,5 +1,9 @@
 package noise;
 
+/**
+ * Implementation of Improved (Perlin) Noise 
+ * with seed instead of z coord
+ */
 public final class PerlinNoise extends Noise {
 
     private static final long DEFAULT_SEED = 0;
@@ -17,53 +21,66 @@ public final class PerlinNoise extends Noise {
 
     @Override
     public double noise(double x, double y){
-        // TODO: some high value seeds break the map generation like: 35622213433L
-        x += this.seed;
-        y += this.seed;
+        double z = 10.0 * this.seed;
+        
+        int X = (int)Math.floor(x) & 255;                  // FIND UNIT CUBE THAT
+        int Y = (int)Math.floor(y) & 255;                  // CONTAINS POINT.
+        int Z = (int)Math.floor(z) & 255;
 
-    	int xi = (int) Math.floor(x) & 255;
-    	int yi = (int) Math.floor(y) & 255;
-    	int g1 = p[p[xi] + yi];
-    	int g2 = p[p[xi + 1] + yi];
-    	int g3 = p[p[xi] + yi + 1];
-    	int g4 = p[p[xi + 1] + yi + 1];
-    	
-    	double xf = x - Math.floor(x);
-    	double yf = y - Math.floor(y);
-    	
-    	double d1 = grad(g1, xf, yf);
-    	double d2 = grad(g2, xf - 1, yf);
-    	double d3 = grad(g3, xf, yf - 1);
-    	double d4 = grad(g4, xf - 1, yf - 1);
-    	
-    	double u = fade(xf);
-    	double v = fade(yf);
-    	
-    	double x1Inter = lerp(u, d1, d2);
-    	double x2Inter = lerp(u, d3, d4);
-    	double yInter = lerp(v, x1Inter, x2Inter);
-    	
-    	return yInter;
-    	
-    }
+        x -= Math.floor(x);                                // FIND RELATIVE X,Y,Z
+        y -= Math.floor(y);                                // OF POINT IN CUBE.
+        z -= Math.floor(z);
 
+        double u = fade(x);                                // COMPUTE FADE CURVES
+        double v = fade(y);                                // FOR EACH OF X,Y,Z.
+        double w = fade(z);
+
+        int A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z;      // HASH COORDINATES OF
+        int B = p[X+1]+Y, BA = p[B]+Z, BB = p[B+1]+Z;      // THE 8 CUBE CORNERS,
+
+        return lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),  // AND ADD
+                                       grad(p[BA  ], x-1, y  , z   )), // BLENDED
+                               lerp(u, grad(p[AB  ], x  , y-1, z   ),  // RESULTS
+                                       grad(p[BB  ], x-1, y-1, z   ))),// FROM  8
+                       lerp(v, lerp(u, grad(p[AA+1], x  , y  , z-1 ),  // CORNERS
+                                       grad(p[BA+1], x-1, y  , z-1 )), // OF CUBE
+                               lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
+                                       grad(p[BB+1], x-1, y-1, z-1 ))));
+   }
+
+    /**
+     * linear interpolation
+     * @param amount
+     * @param left
+     * @param right
+     * @return
+     */
     private double lerp(double amount, double left, double right) {
 		return ((1 - amount) * left + amount * right);
 	}
 
+    /**
+     * ease/ smooth curve
+     * @param t
+     * @return
+     */
     private double fade(double t) { 
     	return t * t * t * (t * (t * 6 - 15) + 10); 
     }
 
-    private double grad(int hash, double x, double y){
-    	switch(hash & 3){
-    	    case 0: return x + y;
-    	    case 1: return -x + y;
-    	    case 2: return x - y;
-    	    case 3: return -x - y;
-    	    default: return 0;
-    	}
-    }
+    /**
+     * returns a 2D gradient
+     * @param hash
+     * @param x
+     * @param y
+     * @return
+     */
+    private double grad(int hash, double x, double y, double z) {
+        int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
+        double u = h<8 ? x : y,                 // INTO 12 GRADIENT DIRECTIONS.
+               v = h<4 ? y : h==12||h==14 ? x : z;
+        return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
+     }
 
     private final int p[] = new int[512], permutation[] = { 151,160,137,91,90,15,
         131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
@@ -80,6 +97,9 @@ public final class PerlinNoise extends Noise {
         138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
     };
 
+    /**
+     * initialize array p
+     */
     private void init() {
         for (int i=0; i < 256 ; i++) p[256+i] = p[i] = permutation[i]; 
     }
