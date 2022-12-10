@@ -110,7 +110,7 @@ public class NoiseMap {
     }
 
     public void generateElevation() {
-        noise = new OpenSimplexNoise(3798468263429989362L);
+        noise = new OpenSimplexNoise(elevationSeed);
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
