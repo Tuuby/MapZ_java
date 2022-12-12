@@ -1,18 +1,16 @@
 package guis;
 
 import com.jogamp.opengl.awt.GLCanvas;
+import guis.controller.SliderController;
+import guis.view.SliderView;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class SwingManager {
-    private static JLabel WaterlevelLabel;
-    private static JSlider WaterlevelSlider;
-
 
     public static void build(JFrame mainFrame, GLCanvas glCanvas) {
-
-        Font myFont = new Font("SansSerif", Font.PLAIN, 12);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(glCanvas, BorderLayout.CENTER);
@@ -20,19 +18,16 @@ public class SwingManager {
 
         JPanel uiPanel = new JPanel();
         uiPanel.setLayout(new BoxLayout(uiPanel, BoxLayout.Y_AXIS));
+        uiPanel.setBorder(new EmptyBorder(10, 3, 0, 3));
 
-        WaterlevelLabel = new JLabel("Waterlevel");
-        WaterlevelLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        WaterlevelLabel.setFont(myFont);
-        uiPanel.add(WaterlevelLabel);
+        SliderView waterView = new SliderView("water");
+        SliderView grassView = new SliderView("grass");
 
-        WaterlevelSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, 100);
-        WaterlevelSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
-        WaterlevelSlider.setMajorTickSpacing(100);
-        WaterlevelSlider.setMinorTickSpacing(16);
-        WaterlevelSlider.setPaintTicks(true);
-        WaterlevelSlider.setPaintLabels(true);
-        uiPanel.add(WaterlevelSlider);
+        SliderController waterController = new SliderController(waterView);
+        SliderController grassController = new SliderController(grassView);
+
+        uiPanel.add(waterView.getPanel());
+        uiPanel.add(grassView.getPanel());
 
         mainPanel.add(uiPanel, BorderLayout.EAST);
         mainFrame.getContentPane().add(mainPanel);
