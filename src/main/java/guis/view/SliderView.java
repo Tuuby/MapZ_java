@@ -11,8 +11,9 @@ import java.awt.*;
  */
 public class SliderView {
     private final JPanel panel;
-    private final JLabel label;
-    private final JTextField textField;
+    private final JTextField sliderTextField;
+
+    private final JLabel errorLabel;
     private final JSlider slider;
 
     public SliderView(String name) {
@@ -28,18 +29,24 @@ public class SliderView {
         topPanel.setMaximumSize(new Dimension(1000, 25));
 
         // label
-        label = new JLabel(name);
+        JLabel label = new JLabel(name);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         label.setFont(font);
         label.setBorder(new EmptyBorder(0, 0, 0, 10));
         topPanel.add(label, BorderLayout.LINE_START);
 
         // textfield
-        textField = new JTextField();
-        textField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        textField.setFont(font);
-        textField.setMaximumSize(new Dimension(1000, 25));
-        topPanel.add(textField, BorderLayout.CENTER);
+        sliderTextField = new JTextField();
+        sliderTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sliderTextField.setFont(font);
+        sliderTextField.setMaximumSize(new Dimension(1000, 25));
+        topPanel.add(sliderTextField, BorderLayout.CENTER);
+
+        errorLabel = new JLabel("Invalid value, expected [0, 255]");
+        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        errorLabel.setFont(font);
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setVisible(false);
 
         // slider
         slider = new JSlider(JSlider.HORIZONTAL, 0, 255, 100); // value set by DSL
@@ -49,9 +56,10 @@ public class SliderView {
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
 
-        textField.setText(String.valueOf(slider.getValue()));
+        sliderTextField.setText(String.valueOf(slider.getValue()));
 
         panel.add(topPanel);
+        panel.add(errorLabel);
         panel.add(slider);
     }
 
@@ -60,10 +68,12 @@ public class SliderView {
     }
 
     public JTextField getTextField() {
-        return this.textField;
+        return this.sliderTextField;
     }
 
     public JSlider getSlider() {
         return this.slider;
     }
+
+    public JLabel getErrorLabel() { return this.errorLabel; }
 }
