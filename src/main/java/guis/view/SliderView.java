@@ -49,6 +49,8 @@ public class SliderView {
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
 
+        textField.setText(String.valueOf(slider.getValue()));
+
         panel.add(topPanel);
         panel.add(slider);
     }

@@ -1,6 +1,8 @@
 package guis;
 
 import com.jogamp.opengl.awt.GLCanvas;
+import engine.MapUpdater;
+import graphics.Renderer;
 import guis.controller.SliderController;
 import guis.view.SliderView;
 
@@ -23,8 +25,16 @@ public class SwingManager {
         SliderView waterView = new SliderView("water");
         SliderView grassView = new SliderView("grass");
 
-        SliderController waterController = new SliderController(waterView);
-        SliderController grassController = new SliderController(grassView);
+        SliderController waterController = new SliderController(waterView, value -> {
+            MapUpdater.getMap().setWaterlevel(value);
+            MapUpdater.render();
+            Renderer.render();
+        });
+        SliderController grassController = new SliderController(grassView, value -> {
+            MapUpdater.getMap().setWeedlevel(value);
+            MapUpdater.render();
+            Renderer.render();
+        });
 
         uiPanel.add(waterView.getPanel());
         uiPanel.add(grassView.getPanel());

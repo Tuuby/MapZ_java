@@ -1,41 +1,44 @@
 package guis.controller;
 
+import guis.UpdateMapProperty;
 import guis.view.SliderView;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 public class SliderController {
 
     private final SliderView view;
 
-    public SliderController(SliderView view) {
+    private final UpdateMapProperty updater;
+
+    public SliderController(SliderView view, UpdateMapProperty updater) {
+        this.updater = updater;
         this.view = view;
         init();
     }
 
     private void init() {
         JTextField textField = view.getTextField();
-        textField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                System.out.println("insert");
-            }
+        JSlider slider = view.getSlider();
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                System.out.println("remove");
-            }
-
-            // rarely called
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                System.out.println("change");
+        // gets trigger when Enter key is pressed
+        textField.addActionListener(e -> {
+            String text = textField.getText();
+            try {
+                short value = Short.parseShort(text);
+                if(value <= slider.getMaximum() && value >= slider.getMinimum()) {
+                    slider.setValue(value);
+                    updater.update(value);
+                }
+            } catch (NumberFormatException numberFormatException) {
+                // TODO: error handling
             }
         });
 
-        JSlider slider = view.getSlider();
-        slider.addChangeListener(e -> System.out.println(slider.getValue()));
+        slider.addChangeListener(e -> {
+            short value = (short) slider.getValue();
+            textField.setText(String.valueOf(value));
+            updater.update(value);
+        });
     }
 }
