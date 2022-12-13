@@ -1,22 +1,23 @@
 package guis.controller;
 
 import guis.UpdateMapProperty;
-import guis.view.SliderView;
+import guis.view.SeedView;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SliderController {
+public class SeedController {
 
-    private final SliderView view;
+    private final SeedView view;
     private final UpdateMapProperty updater;
 
-    public SliderController(SliderView view, UpdateMapProperty updater) {
+    public SeedController(SeedView view, UpdateMapProperty updater) {
         this.updater = updater;
         this.view = view;
         init();
@@ -24,26 +25,8 @@ public class SliderController {
 
     private void init() {
         JTextField textField = view.getTextField();
-        JSlider slider = view.getSlider();
-        JLabel errorLabel = view.getErrorLabel();
-
-        // gets trigger when Enter key is pressed
-        textField.addActionListener(e -> {
-            String text = textField.getText();
-            try {
-                short value = Short.parseShort(text);
-                if(value <= slider.getMaximum() && value >= slider.getMinimum()) {
-                    slider.setValue(value);
-                    updater.update(value);
-                    errorLabel.setVisible(false);
-                } else {
-                    errorLabel.setVisible(true);
-                }
-            } catch (NumberFormatException numberFormatException) {
-                errorLabel.setVisible(true);
-            }
-        });
-
+        JButton randomSeedButton = view.getRandomSeedButton();
+        JButton button = view.getButton();
         ((AbstractDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
             final Pattern regEx = Pattern.compile("\\d*");
 
@@ -57,11 +40,19 @@ public class SliderController {
             }
         });
 
-        slider.addChangeListener(e -> {
-            short value = (short) slider.getValue();
+        button.addActionListener(e -> {
+            String text = textField.getText();
+            if(! text.isBlank()) {
+                long value = Long.parseLong(text);
+                updater.update(value);
+            }
+
+        });
+
+        randomSeedButton.addActionListener(e -> {
+            long value = new Random().nextLong();
+            System.out.println(value);
             textField.setText(String.valueOf(value));
-            updater.update(value);
-            errorLabel.setVisible(false);
         });
     }
 }

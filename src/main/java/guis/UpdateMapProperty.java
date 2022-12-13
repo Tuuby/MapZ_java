@@ -6,5 +6,5 @@ package guis;
  */
 public interface UpdateMapProperty {
 
-    void update(short value);
+    void update(long value);
 }

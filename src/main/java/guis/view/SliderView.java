@@ -12,7 +12,6 @@ import java.awt.*;
 public class SliderView {
     private final JPanel panel;
     private final JTextField sliderTextField;
-
     private final JLabel errorLabel;
     private final JSlider slider;
 
