@@ -1,2 +1,8 @@
 # Project exclude paths
 /out/
+
+# maven generated files
+/target
+
+# vscode specific files
+/.vscode
