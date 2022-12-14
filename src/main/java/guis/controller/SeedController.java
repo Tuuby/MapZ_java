@@ -27,8 +27,9 @@ public class SeedController {
         JTextField textField = view.getTextField();
         JButton randomSeedButton = view.getRandomSeedButton();
         JButton button = view.getButton();
+        JLabel errorLabel = view.getErrorLabel();
         ((AbstractDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
-            final Pattern regEx = Pattern.compile("\\d*");
+            final Pattern regEx = Pattern.compile("-?\\d*");
 
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
@@ -37,22 +38,27 @@ public class SeedController {
                     return;
                 }
                 super.replace(fb, offset, length, text, attrs);
+                errorLabel.setVisible(false);
             }
         });
 
         button.addActionListener(e -> {
             String text = textField.getText();
             if(! text.isBlank()) {
-                long value = Long.parseLong(text);
-                updater.update(value);
+                try {
+                    long value = Long.parseLong(text);
+                    updater.update(value);
+                } catch (NumberFormatException numberFormatException) {
+                    errorLabel.setVisible(true);
+                }
             }
 
         });
 
         randomSeedButton.addActionListener(e -> {
             long value = new Random().nextLong();
-            System.out.println(value);
             textField.setText(String.valueOf(value));
+            errorLabel.setVisible(false);
         });
     }
 }
