@@ -44,12 +44,10 @@ public class SwingManager {
 
         SliderController waterController = new SliderController(waterView, value -> {
             MapUpdater.getMap().setWaterlevel((short) value);
-            MapUpdater.render();
             Renderer.render();
         });
         SliderController grassController = new SliderController(grassView, value -> {
             MapUpdater.getMap().setWeedlevel((short) value);
-            MapUpdater.render();
             Renderer.render();
         });
 

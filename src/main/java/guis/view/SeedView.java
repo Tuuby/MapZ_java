@@ -9,6 +9,7 @@ public class SeedView {
     private final JTextField seedTextField;
     private final JButton randomSeedButton;
     private final JButton generateButton;
+    private final JLabel errorLabel;
 
     public SeedView(int seedValue) {
         Font font = new Font("SansSerif", Font.PLAIN, 12);
@@ -37,12 +38,21 @@ public class SeedView {
         // button for generating
         generateButton = new JButton("Generate");
 
+        // error label
+        errorLabel = new JLabel("Invalid value for seed");
+        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        errorLabel.setFont(font);
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setVisible(false);
+
         topPanel.add(seedLabel, BorderLayout.LINE_START);
         topPanel.add(seedTextField, BorderLayout.CENTER);
         topPanel.add(randomSeedButton, BorderLayout.LINE_END);
 
         panel.add(topPanel);
+        panel.add(errorLabel);
         panel.add(generateButton);
+
     }
     public JPanel getPanel() {
         return this.panel;
@@ -54,4 +64,5 @@ public class SeedView {
     public JButton getButton() {
         return this.generateButton;
     }
+    public JLabel getErrorLabel() { return this.errorLabel; }
 }
