@@ -2,6 +2,7 @@ package noise;
 
 import graphics.Graphics;
 
+import java.awt.*;
 import java.util.Random;
 
 public class NoiseMap {
@@ -175,14 +176,17 @@ public class NoiseMap {
     public void render() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (elevation[x][y] < waterlevel) {
-                    Graphics.setColor(0, elevation[x][y] / 255f, (elevation[x][y] + 127) / 255f, 1);
-                    Graphics.drawPixel(x, y);
+                float d;// ratio for brightness, here the highest elevation value
+                short noiseValue = elevation[x][y];
+                if (noiseValue < waterlevel) {
+                    d = noiseValue / (float) waterlevel;
+                    Graphics.setColor(Color.BLUE, d);
                 }
                 else {
-                    Graphics.setColor(elevation[x][y] / 255f - 0.3f, 0.9f - (elevation[x][y] / 1023f), 0, 1);
-                    Graphics.drawPixel(x, y);
+                    d = noiseValue / 512f; // TODO: find highest value
+                    Graphics.setColor(Color.GREEN, d);
                 }
+                Graphics.drawPixel(x, y);
             }
         }
     }

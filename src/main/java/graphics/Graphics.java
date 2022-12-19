@@ -4,6 +4,8 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import resource.ImageResource;
 
+import java.awt.*;
+
 public class Graphics {
 
     private static GL2 gl;
@@ -69,6 +71,27 @@ public class Graphics {
         green = Math.max(0, Math.min(1, g));
         blue = Math.max(0, Math.min(1, b));
         alpha = Math.max(0, Math.min(1, a));
+    }
+
+    /**
+     * set color to paint with dynamic brightness
+     * @param c Color to set
+     * @param d dividend to calculate brightness from (elevation/draw-level)
+     */
+    public static void setColor(Color c, float d) {
+        float[] hsb = Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), null);
+        float hue = hsb[0];
+        float saturation = hsb[1];
+        float brightness = 0.5f; // base brightness to add to
+        float brightnessGain = (1f - brightness) * d; // brightness to add based on fracture
+        brightness += brightnessGain;
+
+        int rgb = Color.HSBtoRGB(hue, saturation, brightness);
+
+        red = ((rgb>>16)&0xFF) / 255f;
+        green = ((rgb>>8)&0xFF) / 255f;
+        blue = (rgb&0xFF) / 255f;
+        alpha = c.getAlpha() / 255f;
     }
 
     public static void setRotation(float rotation) {
