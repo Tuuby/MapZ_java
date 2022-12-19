@@ -178,13 +178,16 @@ public class NoiseMap {
             for (int y = 0; y < height; y++) {
                 float d;// ratio for brightness, here the highest elevation value
                 short noiseValue = elevation[x][y];
+                Color c;
                 if (noiseValue < waterlevel) {
                     d = noiseValue / (float) waterlevel;
-                    Graphics.setColor(Color.BLUE, d);
+                    c = Color.decode("#0000ff");
+                    Graphics.setColor(c, d);
                 }
                 else {
                     d = noiseValue / 512f; // TODO: find highest value
-                    Graphics.setColor(Color.GREEN, d);
+                    c = Color.decode("#00ff00");
+                    Graphics.setColor(c, d);
                 }
                 Graphics.drawPixel(x, y);
             }
