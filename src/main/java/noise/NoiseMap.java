@@ -8,29 +8,21 @@ public class NoiseMap {
     private int width;
     private int height;
     private long elevationSeed;
-    private long moistureSeed;
-    private short[][] elevation;
-    private short[][] moisture;
-    private boolean[][] trees;
-    private double scale = 0.01;
+    private final short[][] elevation;
+    private double scale = 0.1;
     private short waterlevel = 0;
-    private short weedlevel = 0;
     private int elevationOffset;
-    private int moistureOffset;
     private Noise noise;
 
     public NoiseMap(int width, int height) {
         this.width = width;
         this.height = height;
         elevation = new short[width][height];
-        moisture = new short[width][height];
-        trees = new boolean[width][height];
     }
 
     public NoiseMap(int width, int height, long eSeed, long mSeed) {
         this(width, height);
         elevationSeed = eSeed;
-        moistureSeed = mSeed;
     }
 
     public int getWidth() {
@@ -57,14 +49,6 @@ public class NoiseMap {
         this.elevationSeed = elevationSeed;
     }
 
-    public long getMoistureSeed() {
-        return moistureSeed;
-    }
-
-    public void setMoistureSeed(long moistureSeed) {
-        this.moistureSeed = moistureSeed;
-    }
-
     public double getScale() {
         return scale;
     }
@@ -81,42 +65,54 @@ public class NoiseMap {
         this.waterlevel = waterlevel;
     }
 
-    public short getWeedlevel() {
-        return weedlevel;
-    }
-
-    public void setWeedlevel(short weedlevel) {
-        this.weedlevel = weedlevel;
-    }
-
-    public int getElevationOffset() {
-        return elevationOffset;
-    }
-
-    public void setElevationOffset(int elevationOffset) {
-        this.elevationOffset = elevationOffset;
-    }
-
-    public int getMoistureOffset() {
-        return moistureOffset;
-    }
-
-    public void setMoistureOffset(int moistureOffset) {
-        this.moistureOffset = moistureOffset;
-    }
-
     public double calculateDistance(int x1, int y1, int x2, int y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
+    // renders only blue canvas so far
+    public void generateElevation(int octaves, double persistance, double lacunarity) {
+        noise = new PerlinNoise(elevationSeed);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+
+                double maxAmplitude = 0;
+                double amplitude = 1;
+                double frequency = scale;
+                double noiseValue = 0;
+
+                // generating the noise values in multiple octaves
+                for (int i = 0; i < octaves; i++) {
+                    noiseValue += noise.noise(x * frequency, y * frequency) * amplitude;
+                    maxAmplitude *= amplitude;
+                    amplitude *= persistance;
+                    frequency *= lacunarity;
+                }
+
+                // normalize to the maximum amplitude
+                noiseValue /= maxAmplitude;
+                // stretch through a quadratic function
+                noiseValue = Math.pow(noiseValue, 2);
+
+                // normalize to values between the low and high thresholds
+                short low = 0;
+                short high = 255;
+                noiseValue = noiseValue * (high - low) / 2 + (double) (high + low) / 2;
+
+                // assigning the values to the array
+                elevation[x][y] = (short) noiseValue;
+            }
+        }
+    }
+
     public void generateElevation() {
-        noise = new OpenSimplexNoise(elevationSeed);
+        noise = new PerlinNoise(elevationSeed);
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 // Values are between 1 & -1; so we multiply by 145 (255 / 1.75) to get the values between -127 & 127
                 // Additionally we add 127 to get the values positive only between 0 & 255
-                double el = (noise.noise(x * (scale * 0.5), y * (scale * 0.5))
+                double el = (noise.noise(x * (scale * 0.25), y * (scale * 0.25))
                         + 0.5 * noise.noise(x * (scale * 2), y * (scale * 2))
                         + 0.25 * noise.noise(x * (scale * 4), y * (scale * 4)))
                         * 145 + 127;
@@ -132,42 +128,6 @@ public class NoiseMap {
                     else
                         elevation[x][y] = Short.MAX_VALUE;
                 }
-            }
-        }
-    }
-
-    public void generateMoisture() {
-        noise = new OpenSimplexNoise(moistureSeed);
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                double mo = (noise.noise(x * (scale * 0.5), y * (scale * 0.5))
-                        + 0.5 * noise.noise(x * (scale * 2), y * (scale * 2))
-                        + 0.25 * noise.noise(x * (scale * 4), y * (scale * 4)))
-                        * 145;
-                moisture[x][y] = (short) mo;
-                if (moistureOffset < 0) {
-                    if (moisture[x][y] >= Short.MIN_VALUE - moistureOffset)
-                        moisture[x][y] += moistureOffset;
-                    else
-                        moisture[x][y] = Short.MIN_VALUE;
-                } else if (moistureOffset > 0) {
-                    if (moisture[x][y] <= Short.MAX_VALUE - moistureOffset)
-                        moisture[x][y] += moistureOffset;
-                    else
-                        moisture[x][y] = Short.MAX_VALUE;
-                }
-            }
-        }
-    }
-
-    public void distributeTrees() {
-        Random rnd = new Random();
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                short m = moisture[x][y];
-                if (rnd.nextInt(255) < m / 8f * scale)
-                    trees[x][y] = true;
             }
         }
     }

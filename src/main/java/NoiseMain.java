@@ -7,7 +7,7 @@ public class NoiseMain {
     public static void main(String[] args) {
         NoiseMap map = new NoiseMap(800, 800, 131, 0);
         map.setWaterlevel((short) 100);
-        map.generateElevation();
+        map.generateElevation(1, 0.5f, 2);
         MapUpdater.setMap(map);
         Renderer.init();
         while (true) {
