@@ -84,7 +84,7 @@ public class NoiseMap {
                 // generating the noise values in multiple octaves
                 for (int i = 0; i < octaves; i++) {
                     noiseValue += noise.noise(x * frequency, y * frequency) * amplitude;
-                    maxAmplitude *= amplitude;
+                    maxAmplitude += amplitude;
                     amplitude *= persistance;
                     frequency *= lacunarity;
                 }
