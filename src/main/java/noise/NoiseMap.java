@@ -91,13 +91,14 @@ public class NoiseMap {
 
                 // normalize to the maximum amplitude
                 noiseValue /= maxAmplitude;
-                // stretch through a quadratic function
-                noiseValue = Math.pow(noiseValue, 2);
 
                 // normalize to values between the low and high thresholds
                 short low = 0;
                 short high = 255;
                 noiseValue = noiseValue * (high - low) / 2 + (double) (high + low) / 2;
+
+                // stretch through a quadratic function
+                noiseValue = Math.pow(noiseValue, 2) / high;
 
                 // assigning the values to the array
                 elevation[x][y] = (short) noiseValue;
@@ -106,32 +107,8 @@ public class NoiseMap {
     }
 
     public void generateElevation() {
-        noise = new PerlinNoise(elevationSeed);
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                // Values are between 1 & -1; so we multiply by 145 (255 / 1.75) to get the values between -127 & 127
-                // Additionally we add 127 to get the values positive only between 0 & 255
-                double el = (noise.noise(x * (scale * 0.25), y * (scale * 0.25))
-                        + 0.5 * noise.noise(x * (scale * 2), y * (scale * 2))
-                        + 0.25 * noise.noise(x * (scale * 4), y * (scale * 4)))
-                        * 145 + 127;
-                elevation[x][y] = (short) (Math.pow(el, 2) / 255);
-                if (elevationOffset < 0) {
-                    if (elevation[x][y] >= Short.MIN_VALUE - elevationOffset)
-                        elevation[x][y] += elevationOffset;
-                    else
-                        elevation[x][y] = Short.MIN_VALUE;
-                } else if (elevationOffset > 0) {
-                    if (elevation[x][y] <= Short.MAX_VALUE - elevationOffset)
-                        elevation[x][y] += elevationOffset;
-                    else
-                        elevation[x][y] = Short.MAX_VALUE;
-                }
-            }
-        }
+        generateElevation(5, 0.5f, 2);
     }
-
     public void render() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
