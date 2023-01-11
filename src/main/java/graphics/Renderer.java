@@ -4,6 +4,7 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
+import guis.SwingManager;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -11,9 +12,10 @@ import java.awt.event.WindowEvent;
 
 public class Renderer {
     private static GLProfile profile = null;
-    private static GLWindow window = null;
+    private static GLCanvas glCanvas = null;
+    private static JFrame mainFrame = null;
 
-    public static int screenWidth = 800;
+    public static int screenWidth = 1000;
     public static int screenHeight = 800;
 
     public static float unitsWide = 800;
@@ -24,30 +26,46 @@ public class Renderer {
         profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities caps = new GLCapabilities(profile);
 
-        window = GLWindow.create(caps);
-        window.setSize(screenWidth, screenHeight);
-        window.setResizable(false);
-        window.addGLEventListener(new EventListener());
+        glCanvas = new GLCanvas(caps);
+        glCanvas.addGLEventListener(new EventListener());
 
-        window.setVisible(true);
+        mainFrame = new JFrame("MapZ");
+        mainFrame.setResizable(false);
+        mainFrame.requestFocus();
+
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mainFrame.dispose();
+                System.exit(0);
+            }
+        });
+
+        mainFrame.setSize(screenWidth, screenHeight);
+        SwingManager.build(mainFrame, glCanvas);
+        mainFrame.setVisible(true);
     }
 
     public static void render() {
-        if (window == null)
+        if (glCanvas == null)
             return;
 
-        window.display();
+        glCanvas.display();
     }
 
     public static int getWindowHeight() {
-        return window.getHeight();
+        return mainFrame.getHeight();
     }
 
     public static int getWindowWidth() {
-        return window.getWidth();
+        return mainFrame.getWidth();
     }
 
     public static GLProfile getProfile() {
         return profile;
+    }
+
+    public static void stop() {
+        mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
     }
 }

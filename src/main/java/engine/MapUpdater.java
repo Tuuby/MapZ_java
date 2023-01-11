@@ -14,4 +14,6 @@ public class MapUpdater {
     public static void setMap(NoiseMap map) {
         MapUpdater.map = map;
     }
+
+    public static NoiseMap getMap() { return MapUpdater.map; }
 }
