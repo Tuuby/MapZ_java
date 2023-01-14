@@ -5,7 +5,7 @@ import graphics.Graphics;
 import java.awt.*;
 import java.util.Random;
 
-public class NoiseMap {
+public abstract class NoiseMap {
     private int width;
     private int height;
     private long elevationSeed;
@@ -70,7 +70,6 @@ public class NoiseMap {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
-    // renders only blue canvas so far
     public void generateElevation(int octaves, double persistance, double lacunarity) {
         noise = new PerlinNoise(elevationSeed);
 
