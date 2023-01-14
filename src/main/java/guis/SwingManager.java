@@ -47,7 +47,7 @@ public class SwingManager {
             Renderer.render();
         });
         SliderController grassController = new SliderController(grassView, value -> {
-            MapUpdater.getMap().setWeedlevel((short) value);
+            // MapUpdater.getMap().setWeedlevel((short) value);
             Renderer.render();
         });
 
