@@ -8,6 +8,7 @@ import guis.controller.SliderController;
 import guis.view.SeedView;
 import guis.view.SliderView;
 import noise.NoiseMap;
+import noise.TerrainMap;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -28,7 +29,7 @@ public class SwingManager {
 
         SeedView seedView = new SeedView(0); // TODO: get actual init seed value from map
         SeedController seedController = new SeedController(seedView, value -> {
-            NoiseMap map = MapUpdater.getMap();
+            TerrainMap map = MapUpdater.getMap();
             if(map.getElevationSeed() != value) {
                 map.setElevationSeed(value);
                 map.generateElevation();

@@ -1,9 +1,9 @@
 package engine;
 
-import noise.NoiseMap;
+import noise.TerrainMap;
 
 public class MapUpdater {
-    private static NoiseMap map;
+    private static TerrainMap map;
 
     public static void render() {
         if (map != null) {
@@ -11,9 +11,9 @@ public class MapUpdater {
         }
     }
 
-    public static void setMap(NoiseMap map) {
+    public static void setMap(TerrainMap map) {
         MapUpdater.map = map;
     }
 
-    public static NoiseMap getMap() { return MapUpdater.map; }
+    public static TerrainMap getMap() { return MapUpdater.map; }
 }

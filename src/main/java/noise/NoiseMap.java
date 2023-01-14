@@ -6,26 +6,13 @@ import java.awt.*;
 import java.util.Random;
 
 public abstract class NoiseMap {
-    private int width;
-    private int height;
-    private long elevationSeed;
-    private final short[][] elevation;
-    private double scale = 0.1;
-    private short waterlevel = 0;
-    private int elevationOffset;
-    private Noise noise;
+    protected int width;
+    protected int height;
 
     public NoiseMap(int width, int height) {
         this.width = width;
         this.height = height;
-        elevation = new short[width][height];
     }
-
-    public NoiseMap(int width, int height, long eSeed, long mSeed) {
-        this(width, height);
-        elevationSeed = eSeed;
-    }
-
     public int getWidth() {
         return width;
     }
@@ -42,112 +29,7 @@ public abstract class NoiseMap {
         this.height = height;
     }
 
-    public long getElevationSeed() {
-        return elevationSeed;
-    }
+    public abstract short[][] generateNoise(int octaves, double persistance, double lacunarity, long seed);
 
-    public void setElevationSeed(long elevationSeed) {
-        this.elevationSeed = elevationSeed;
-    }
-
-    public double getScale() {
-        return scale;
-    }
-
-    public void setScale(double scale) {
-        this.scale = scale;
-    }
-
-    public short getWaterlevel() {
-        return waterlevel;
-    }
-
-    public void setWaterlevel(short waterlevel) {
-        this.waterlevel = waterlevel;
-    }
-
-    public double calculateDistance(int x1, int y1, int x2, int y2) {
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-    }
-
-    public void generateElevation(int octaves, double persistance, double lacunarity) {
-        noise = new PerlinNoise(elevationSeed);
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-
-                double maxAmplitude = 0;
-                double amplitude = 1;
-                double frequency = scale;
-                double noiseValue = 0;
-
-                // generating the noise values in multiple octaves
-                for (int i = 0; i < octaves; i++) {
-                    noiseValue += noise.noise(x * frequency, y * frequency) * amplitude;
-                    maxAmplitude += amplitude;
-                    amplitude *= persistance;
-                    frequency *= lacunarity;
-                }
-
-                // normalize to the maximum amplitude
-                noiseValue /= maxAmplitude;
-
-                // normalize to values between the low and high thresholds
-                short low = 0;
-                short high = 255;
-                noiseValue = noiseValue * (high - low) / 2 + (double) (high + low) / 2;
-
-                // stretch through a quadratic function
-                noiseValue = Math.pow(noiseValue, 2) / high;
-
-                // assigning the values to the array
-                elevation[x][y] = (short) noiseValue;
-            }
-        }
-    }
-
-    public void generateElevation() {
-        generateElevation(5, 0.5f, 2);
-    }
-    public void render() {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                float d;// ratio for brightness, here the highest elevation value
-                short noiseValue = elevation[x][y];
-                Color c;
-                if (noiseValue < waterlevel) {
-                    d = noiseValue / (float) waterlevel;
-                    c = Color.decode("#0000ff");
-                    Graphics.setColor(c, d);
-                }
-                else {
-                    d = noiseValue / 512f; // TODO: find highest value
-                    c = Color.decode("#00ff00");
-                    Graphics.setColor(c, d);
-                }
-                Graphics.drawPixel(x, y);
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Noise.NoiseMap{")
-                .append("width=").append(width)
-                .append(", height=").append(height)
-                .append(",\nvalues=[");
-        for (int i = 0; i < width; i++) {
-            builder.append("[");
-            for (int j = 0; j < height; j++) {
-                if (j == 0)
-                    builder.append(elevation[i][j]);
-                else
-                    builder.append(", ").append(elevation[i][j]);
-            }
-            builder.append("]\n");
-        }
-        builder.append("]}");
-        return builder.toString();
-    }
+    public abstract void render();
 }
