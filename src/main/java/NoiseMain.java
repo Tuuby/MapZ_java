@@ -6,11 +6,8 @@ import noise.TerrainMap;
 public class NoiseMain {
 
     public static void main(String[] args) {
-        TerrainMap map = new TerrainMap(800, 800);
-        map.setElevationSeed(1321);
-        map.setElevationScale(0.004f);
-        map.setWaterlevel((short) 100);
-        map.generateElevation();
+        NoiseMap map = new TerrainMap(800, 800);
+        map.generateMap();
         MapUpdater.setMap(map);
         Renderer.init();
         while (true) {

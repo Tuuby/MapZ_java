@@ -3,6 +3,7 @@ package noise;
 import graphics.Graphics;
 
 import java.awt.*;
+import java.util.Random;
 
 public class TerrainMap extends NoiseMap {
 
@@ -16,6 +17,10 @@ public class TerrainMap extends NoiseMap {
 
     public TerrainMap(int width, int height) {
         super(width, height);
+        Random rnd = new Random();
+        setElevationSeed(rnd.nextInt());
+        setElevationScale(0.004f);
+        setWaterlevel((short) 100);
     }
 
     public long getElevationSeed() {
@@ -40,6 +45,11 @@ public class TerrainMap extends NoiseMap {
 
     public void setWaterlevel(short waterlevel) {
         this.waterlevel = waterlevel;
+    }
+
+    @Override
+    public void generateMap() {
+        generateElevation();
     }
 
     public void generateElevation() {

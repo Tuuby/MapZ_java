@@ -31,5 +31,7 @@ public abstract class NoiseMap {
 
     public abstract short[][] generateNoise(int octaves, double persistance, double lacunarity, long seed);
 
+    public abstract void generateMap();
+
     public abstract void render();
 }

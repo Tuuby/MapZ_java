@@ -29,7 +29,7 @@ public class SwingManager {
 
         SeedView seedView = new SeedView(0); // TODO: get actual init seed value from map
         SeedController seedController = new SeedController(seedView, value -> {
-            TerrainMap map = MapUpdater.getMap();
+            TerrainMap map = (TerrainMap) MapUpdater.getMap();
             if(map.getElevationSeed() != value) {
                 map.setElevationSeed(value);
                 map.generateElevation();
@@ -44,7 +44,7 @@ public class SwingManager {
         SliderView grassView = new SliderView("grass");
 
         SliderController waterController = new SliderController(waterView, value -> {
-            MapUpdater.getMap().setWaterlevel((short) value);
+            ((TerrainMap)MapUpdater.getMap()).setWaterlevel((short) value);
             Renderer.render();
         });
         SliderController grassController = new SliderController(grassView, value -> {

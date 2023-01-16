@@ -56,7 +56,7 @@ public class SeedController {
         });
 
         randomSeedButton.addActionListener(e -> {
-            long value = new Random().nextLong();
+            long value = new Random().nextInt(Short.MAX_VALUE);
             textField.setText(String.valueOf(value));
             errorLabel.setVisible(false);
         });
