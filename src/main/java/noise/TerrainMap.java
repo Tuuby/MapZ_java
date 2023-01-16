@@ -13,14 +13,22 @@ public class TerrainMap extends NoiseMap {
     private long elevationSeed;
     private double elevationScale;
 
+    private short[][] ore;
+    private long oreSeed;
+    private double oreScale;
+
     private short waterlevel;
 
     public TerrainMap(int width, int height) {
         super(width, height);
+
         Random rnd = new Random();
         setElevationSeed(rnd.nextInt());
         setElevationScale(0.004f);
         setWaterlevel((short) 100);
+
+        setOreSeed(rnd.nextInt());
+        setOreScale(0.007f);
     }
 
     public long getElevationSeed() {
@@ -47,15 +55,45 @@ public class TerrainMap extends NoiseMap {
         this.waterlevel = waterlevel;
     }
 
+    public short[][] getOre() {
+        return ore;
+    }
+
+    public void setOre(short[][] ore) {
+        this.ore = ore;
+    }
+
+    public long getOreSeed() {
+        return oreSeed;
+    }
+
+    public void setOreSeed(long oreSeed) {
+        this.oreSeed = oreSeed;
+    }
+
+    public double getOreScale() {
+        return oreScale;
+    }
+
+    public void setOreScale(double oreScale) {
+        this.oreScale = oreScale;
+    }
+
     @Override
     public void generateMap() {
         generateElevation();
+        generateOre();
     }
 
     public void generateElevation() {
-        elevation = generateNoise(8, 0.5f, 2, elevationSeed);
+        elevation = generateNoise(8, 0.5f, 2, elevationScale, elevationSeed);
     }
-    public short[][] generateNoise(int octaves, double persistance, double lacunarity, long seed) {
+
+    public void generateOre() {
+        ore = generateNoise(4, 0.5f, 2, oreScale, oreSeed);
+    }
+
+    public short[][] generateNoise(int octaves, double persistance, double lacunarity, double scale, long seed) {
         noise = new PerlinNoise(seed);
         short[][] generatedNoise = new short[width][height];
 
@@ -64,7 +102,7 @@ public class TerrainMap extends NoiseMap {
 
                 double maxAmplitude = 0;
                 double amplitude = 1;
-                double frequency = elevationScale;
+                double frequency = scale;
                 double noiseValue = 0;
 
                 // generating the noise values in multiple octaves
@@ -96,18 +134,22 @@ public class TerrainMap extends NoiseMap {
     public void render() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                float d;// ratio for brightness, here the highest elevation value
-                short noiseValue = elevation[x][y];
-                Color c;
-                if (noiseValue < waterlevel) {
-                    d = noiseValue / (float) waterlevel;
-                    c = Color.decode("#0000ff");
-                    graphics.Graphics.setColor(c, d);
-                }
-                else {
-                    d = noiseValue / 512f; // TODO: find highest value
-                    c = Color.decode("#00ff00");
-                    graphics.Graphics.setColor(c, d);
+                if (ore[x][y] > 90 && elevation[x][y] > waterlevel) {
+                    Graphics.setColor(0.45f, 0.32f, 0.3f, 1f);
+                } else {
+                    float d;// ratio for brightness, here the highest elevation value
+                    short noiseValue = elevation[x][y];
+                    Color c;
+                    if (noiseValue < waterlevel) {
+                        d = noiseValue / (float) waterlevel;
+                        c = Color.decode("#0000ff");
+                        graphics.Graphics.setColor(c, d);
+                    }
+                    else {
+                        d = noiseValue / 512f; // TODO: find highest value
+                        c = Color.decode("#00ff00");
+                        graphics.Graphics.setColor(c, d);
+                    }
                 }
                 Graphics.drawPixel(x, y);
             }

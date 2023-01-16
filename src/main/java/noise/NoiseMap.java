@@ -29,7 +29,7 @@ public abstract class NoiseMap {
         this.height = height;
     }
 
-    public abstract short[][] generateNoise(int octaves, double persistance, double lacunarity, long seed);
+    public abstract short[][] generateNoise(int octaves, double persistance, double lacunarity, double scale, long seed);
 
     public abstract void generateMap();
 
