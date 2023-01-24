@@ -94,6 +94,25 @@ public class Graphics {
         alpha = c.getAlpha() / 255f;
     }
 
+
+    /**
+     * set color with hsb properties
+     * @param hue color tone in range [0, 360]
+     * @param saturation intensity of the color [0, 100]
+     * @param brightness / value of the color [0, 100]
+     */
+    public static void setHSBColor(float hue, float saturation, float brightness) {
+        hue /= 360f;
+        saturation /= 100f;
+        brightness /= 100f;
+        int rgb = Color.HSBtoRGB(hue, saturation, brightness);
+
+        red = ((rgb>>16)&0xFF) / 255f;
+        green = ((rgb>>8)&0xFF) / 255f;
+        blue = (rgb&0xFF) / 255f;
+        alpha = 1f;
+    }
+
     public static void setRotation(float rotation) {
         Graphics.rotation = rotation;
     }

@@ -135,20 +135,16 @@ public class TerrainMap extends NoiseMap {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (ore[x][y] > 90 && elevation[x][y] > waterlevel) {
-                    Graphics.setColor(0.45f, 0.32f, 0.3f, 1f);
+                    Graphics.setHSBColor(9, 33, 45);
                 } else {
                     float d;// ratio for brightness, here the highest elevation value
-                    short noiseValue = elevation[x][y];
+                    float elevation = this.elevation[x][y];
                     Color c;
-                    if (noiseValue < waterlevel) {
-                        d = noiseValue / (float) waterlevel;
-                        c = Color.decode("#0000ff");
-                        graphics.Graphics.setColor(c, d);
+                    if (elevation < waterlevel) {
+                        Graphics.setHSBColor(240, 100, (elevation/waterlevel) * 50 + 50);
                     }
                     else {
-                        d = noiseValue / 512f; // TODO: find highest value
-                        c = Color.decode("#00ff00");
-                        graphics.Graphics.setColor(c, d);
+                        Graphics.setHSBColor(120, 100, 100 - ((elevation / 255f) * 65));
                     }
                 }
                 Graphics.drawPixel(x, y);
