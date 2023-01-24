@@ -97,7 +97,6 @@ public class TerrainMap extends NoiseMap {
                 if (ore[x][y] > 90 && elevation[x][y] > waterlevel) {
                     Graphics.setHSBColor(9, 33, 45);
                 } else {
-                    float d;// ratio for brightness, here the highest elevation value
                     float elevation = this.elevation[x][y];
                     Color c;
                     if (elevation < waterlevel) {
