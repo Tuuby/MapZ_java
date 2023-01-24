@@ -35,7 +35,7 @@ public abstract class NoiseMap {
 
     public abstract void render();
 
-    public short[][] generateNoise(int octaves, double persistance, double lacunarity, double scale, long seed) {
+    protected short[][] generateNoise(int octaves, double persistance, double lacunarity, double scale, long seed) {
         noise = new PerlinNoise(seed);
         short[][] generatedNoise = new short[width][height];
 
