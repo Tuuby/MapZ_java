@@ -15,7 +15,7 @@ public class SliderView {
     private final JLabel errorLabel;
     private final JSlider slider;
 
-    public SliderView(String name) {
+    public SliderView(String name, int minSliderValue, int maxSliderValue, int startSliderValue) {
         Font font = new Font("SansSerif", Font.PLAIN, 12);
 
         // panel
@@ -48,7 +48,7 @@ public class SliderView {
         errorLabel.setVisible(false);
 
         // slider
-        slider = new JSlider(JSlider.HORIZONTAL, 0, 255, 100); // value set by DSL
+        slider = new JSlider(JSlider.HORIZONTAL, minSliderValue, maxSliderValue, startSliderValue); // value set by DSL
         slider.setAlignmentX(Component.CENTER_ALIGNMENT);
         slider.setMajorTickSpacing(85);
         slider.setMinorTickSpacing(32);

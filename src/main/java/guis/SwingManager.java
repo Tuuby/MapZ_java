@@ -7,7 +7,6 @@ import guis.controller.SeedController;
 import guis.controller.SliderController;
 import guis.view.SeedView;
 import guis.view.SliderView;
-import noise.NoiseMap;
 import noise.TerrainMap;
 
 import javax.swing.*;
@@ -27,7 +26,7 @@ public class SwingManager {
         uiPanel.setPreferredSize(new Dimension(280, 0));
         uiPanel.setBorder(new EmptyBorder(10, 3, 0, 3));
 
-        SeedView seedView = new SeedView(0); // TODO: get actual init seed value from map
+        SeedView seedView = new SeedView("elevation", ((TerrainMap)MapUpdater.getMap()).getElevationSeed());
         SeedController seedController = new SeedController(seedView, value -> {
             TerrainMap map = (TerrainMap) MapUpdater.getMap();
             if(map.getElevationSeed() != value) {
@@ -40,8 +39,8 @@ public class SwingManager {
 
         uiPanel.add(seedView.getPanel());
 
-        SliderView waterView = new SliderView("water");
-        SliderView grassView = new SliderView("grass");
+        SliderView waterView = new SliderView("water", 0, 255, ((TerrainMap)MapUpdater.getMap()).getWaterlevel());
+        SliderView grassView = new SliderView("grass", 0, 255, ((TerrainMap)MapUpdater.getMap()).getWaterlevel());
 
         SliderController waterController = new SliderController(waterView, value -> {
             ((TerrainMap)MapUpdater.getMap()).setWaterlevel((short) value);

@@ -1,9 +1,6 @@
 package graphics;
 
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.util.texture.Texture;
-import resource.ImageResource;
-
 import java.awt.*;
 
 public class Graphics {
@@ -15,8 +12,6 @@ public class Graphics {
     private static float blue = 1;
     private static float alpha = 1;
 
-    private static float rotation = 0;
-
     public static void drawPixel(float x, float y) {
         gl = EventListener.gl;
 
@@ -25,45 +20,6 @@ public class Graphics {
         gl.glBegin(GL2.GL_POINTS);
         gl.glVertex2f(x, y);
         gl.glEnd();
-    }
-
-    public static void drawImage(ImageResource image, float x, float y, float width, float height) {
-        gl = EventListener.gl;
-
-        Texture texture = image.getTexture();
-
-        if (x - width / 2 > Renderer.unitsWide ||
-            x + width / 2 < 0 ||
-            y - height / 2 > Renderer.unitsTall ||
-            y + height / 2 < 0) {
-            return;
-        }
-
-        if (texture != null) {
-            gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
-        }
-
-        gl.glTranslatef(x, y, 0);
-        gl.glRotatef(rotation, 0, 0, 1);
-
-        gl.glColor4f(1, 1, 1, 1);
-        gl.glBegin(GL2.GL_QUADS);
-
-        gl.glTexCoord2f(0, 0);
-        gl.glVertex2f(-width / 2, -height / 2);
-        gl.glTexCoord2f(1, 0);
-        gl.glVertex2f(width / 2, -height / 2);
-        gl.glTexCoord2f(1,1);
-        gl.glVertex2f(width / 2,  height / 2);
-        gl.glTexCoord2f(0,1);
-        gl.glVertex2f(-width / 2, height / 2);
-        gl.glEnd();
-        gl.glFlush();
-
-        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
-
-        gl.glRotatef(-rotation, 0, 0, 1);
-        gl.glTranslatef(-x, -y, 0);
     }
 
     public static void setColor(float r, float g, float b, float a) {
@@ -94,7 +50,22 @@ public class Graphics {
         alpha = c.getAlpha() / 255f;
     }
 
-    public static void setRotation(float rotation) {
-        Graphics.rotation = rotation;
+
+    /**
+     * set color with hsb properties
+     * @param hue color tone in range [0, 360]
+     * @param saturation intensity of the color [0, 100]
+     * @param brightness / value of the color [0, 100]
+     */
+    public static void setHSBColor(float hue, float saturation, float brightness) {
+        hue /= 360f;
+        saturation /= 100f;
+        brightness /= 100f;
+        int rgb = Color.HSBtoRGB(hue, saturation, brightness);
+
+        red = ((rgb>>16)&0xFF) / 255f;
+        green = ((rgb>>8)&0xFF) / 255f;
+        blue = (rgb&0xFF) / 255f;
+        alpha = 1f;
     }
 }

@@ -1,7 +1,6 @@
 package engine;
 
 import noise.NoiseMap;
-import noise.TerrainMap;
 
 public class MapUpdater {
     private static NoiseMap map;
