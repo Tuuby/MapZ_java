@@ -7,7 +7,6 @@ import guis.controller.SeedController;
 import guis.controller.SliderController;
 import guis.view.SeedView;
 import guis.view.SliderView;
-import noise.NoiseMap;
 import noise.TerrainMap;
 
 import javax.swing.*;
@@ -40,8 +39,8 @@ public class SwingManager {
 
         uiPanel.add(seedView.getPanel());
 
-        SliderView waterView = new SliderView("water");
-        SliderView grassView = new SliderView("grass");
+        SliderView waterView = new SliderView("water", 0, 255);
+        SliderView grassView = new SliderView("grass", 0, 255);
 
         SliderController waterController = new SliderController(waterView, value -> {
             ((TerrainMap)MapUpdater.getMap()).setWaterlevel((short) value);
