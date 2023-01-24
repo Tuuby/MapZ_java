@@ -11,7 +11,7 @@ public class SeedView {
     private final JButton generateButton;
     private final JLabel errorLabel;
 
-    public SeedView(String seedName, int seedValue) {
+    public SeedView(String seedName, long seedValue) {
         Font font = new Font("SansSerif", Font.PLAIN, 12);
         // main panel
         panel = new JPanel();
