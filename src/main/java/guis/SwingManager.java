@@ -26,7 +26,7 @@ public class SwingManager {
         uiPanel.setPreferredSize(new Dimension(280, 0));
         uiPanel.setBorder(new EmptyBorder(10, 3, 0, 3));
 
-        SeedView seedView = new SeedView("elevation", ((TerrainMap)MapUpdater.getMap()).getElevationSeed()); // TODO: get actual init seed value from map
+        SeedView seedView = new SeedView("elevation", ((TerrainMap)MapUpdater.getMap()).getElevationSeed());
         SeedController seedController = new SeedController(seedView, value -> {
             TerrainMap map = (TerrainMap) MapUpdater.getMap();
             if(map.getElevationSeed() != value) {

@@ -1,8 +1,6 @@
 package graphics;
 
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.util.texture.Texture;
-
 import java.awt.*;
 
 public class Graphics {
@@ -13,8 +11,6 @@ public class Graphics {
     private static float green = 1;
     private static float blue = 1;
     private static float alpha = 1;
-
-    private static float rotation = 0;
 
     public static void drawPixel(float x, float y) {
         gl = EventListener.gl;
@@ -71,9 +67,5 @@ public class Graphics {
         green = ((rgb>>8)&0xFF) / 255f;
         blue = (rgb&0xFF) / 255f;
         alpha = 1f;
-    }
-
-    public static void setRotation(float rotation) {
-        Graphics.rotation = rotation;
     }
 }

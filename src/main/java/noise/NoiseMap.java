@@ -1,10 +1,5 @@
 package noise;
 
-import graphics.Graphics;
-
-import java.awt.*;
-import java.util.Random;
-
 public abstract class NoiseMap {
 
     protected Noise noise;

@@ -2,7 +2,6 @@ package noise;
 
 import graphics.Graphics;
 
-import java.awt.*;
 import java.util.Random;
 
 public class TerrainMap extends NoiseMap {
@@ -98,7 +97,6 @@ public class TerrainMap extends NoiseMap {
                     Graphics.setHSBColor(9, 33, 45);
                 } else {
                     float elevation = this.elevation[x][y];
-                    Color c;
                     if (elevation < waterlevel) {
                         Graphics.setHSBColor(240, 100, (elevation/waterlevel) * 50 + 50);
                     }
